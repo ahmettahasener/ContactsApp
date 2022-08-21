@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -9,25 +10,33 @@ namespace ContactsApp
     {
         static void Main(string[] args)
         {
-            Dictionary<string, string> Contacts = new Dictionary<string, string>();
-            Contacts.Add("Oliver Jake","45653634654");
-            Contacts.Add("Jack Connor","46546635654");
-            Contacts.Add("Harry Callum","63463467979");
-            Contacts.Add("Charlie Kyle","45674747654");
-            Contacts.Add("Thomas Joe","47475475745");
+            List<Contact> Contactlist = new List<Contact>();
+            Contact contact1 = new Contact("Oliver", "Jake", "45653634654");
+            Contact contact2 = new Contact("Jack", "Connor", "46546635654");
+            Contact contact3 = new Contact("Harry", "Callum", "63463467979");
+            Contact contact4 = new Contact("Charlie", "Kyle", "45674747654");
+            Contact contact5 = new Contact("Thomas", "Joe", "47475475745");
+            Contactlist.Add(contact1);
+            Contactlist.Add(contact2);
+            Contactlist.Add(contact3);
+            Contactlist.Add(contact4);
+            Contactlist.Add(contact5);
+            Methods methods = new Methods();
+
 
             while (true)
             {
                 Console.WriteLine("");
-                Console.WriteLine("You have {0} contact in your contacts.",Contacts.Count);
                 Console.WriteLine("1 - Register Phone Number");
                 Console.WriteLine("2 - Delete Phone Number");
                 Console.WriteLine("3 - Update Phone Number");
                 Console.WriteLine("4 - Directory Listing");
                 Console.WriteLine("5 - Search in the Directory");
                 Console.Write("Enter the action you want to do: ");
+
                 Regex pattern = new Regex("^[a-zA-Z]+$");
                 string process = Console.ReadLine();
+
                 if (pattern.IsMatch(process))
                 {
                     Console.WriteLine("Please enter a operation number and do not write non numeric characters.");
@@ -36,59 +45,84 @@ namespace ContactsApp
                 switch (process)
                 {
                     case "1":
-                        Console.Write("Please enter name: ");
+                        Console.Write(" Please enter name: ");
                         string name = Console.ReadLine();
-                        Console.Write("Please enter phone number: ");
+                        Console.Write(" Please enter surname: ");
+                        string surname = Console.ReadLine();
+                        Console.Write(" Please enter phone number: ");
                         string phone = Console.ReadLine();
-                        Contacts.Add(name, phone);
-                        Console.WriteLine(name + " added successfully.");
+                        Contact Contact = new Contact(name, surname, phone);
+                        Contactlist.Add(Contact);
+                        Console.Write("{0} {1} added your contacts successfully.",name,surname);
                         break;
                     case "2":
                         Console.Write("Please enter the name of the person you want to delete: ");
-                        string name1 = Console.ReadLine();
-                        if (Contacts.ContainsKey(name1))
+                        string namesurname = Console.ReadLine();
+                        foreach (var item in Contactlist.ToList())
                         {
-                            Contacts.Remove(name1);
-                            Console.WriteLine(name1 + " deleted successfully.");
+                            if (item.Name == namesurname || item.Surname == namesurname)
+                            {
+                                Console.WriteLine("The person named {0} is about to be deleted from the directory, do you confirm? ?(y/n)", item.Name);
+                                string answer = Console.ReadLine();
+                                if (answer == "y")
+                                {
+                                    Contactlist.Remove(item);
+                                    Console.WriteLine("The contact has been deleted.");
+                                }
+                                else if (answer == "n")
+                                {
+                                    Console.WriteLine("Deletion canceled.");
+                                }
+                                else if (answer != "n" || answer != "y")
+                                {
+                                    Console.WriteLine("You can just write 'y' or 'n'");
+                                }
+                            }
                         }
-                        else
-                            Console.WriteLine("The person you are looking for was not found. Please enter a person's name in the directory.");
                         break;
 
                     case "3":
-                        Console.Write("Please enter the name of the person you want to edit: ");
-                        string name3 = Console.ReadLine();
-                        Console.Write("Please enter the new number of the person you want to edit: ");
-                        string phone_new = Console.ReadLine();
-                        if (Contacts.ContainsKey(name3))
+                        Console.Write("Please enter name of contact you want to edit: ");
+                        string namesurname1 = Console.ReadLine();
+                        foreach (var item in Contactlist)
                         {
-                            Contacts.Remove(name3);
-                            Contacts.Add(name3, phone_new);
-                            Console.WriteLine(name3 + " edited successfully.");
+                            if (item.Name == namesurname1 || item.Surname == namesurname1)
+                            {
+                                methods.ContactUpdate(item);
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("There is no person with this name in your contacts. Please make a selection.\n* To end the deletion : (1) \n* To try again      : (2)");
+                                int num = int.Parse(Console.ReadLine());
+                                //methods.ContactNotFound(num);
+                            }
                         }
-                        else
-                            Console.WriteLine("The person you are looking for was not found. Please enter a person's name in the directory.");
                         break;
                     case "4":
-                        Console.WriteLine("******Your contacts******");
-                        foreach (var item in Contacts)
-                        {
-                            Console.WriteLine(item);
-                        }
+                        methods.ListDirectory(Contactlist);
                         break;
                     case "5":
-                        Console.Write("Please enter the name you want to search: ");
-                        string name2 = Console.ReadLine();
-                        bool status = Contacts.ContainsKey(name2);
-                        
-                        if (status)
+                        Console.WriteLine("Select the type you want to search.\n**********************************************");
+                        Console.WriteLine("To search by first or last name: (1)\nTo search by phone number: (2)");
+                        int num1 = int.Parse(Console.ReadLine());
+
+                        if (num1 == 1)
                         {
-                            Console.WriteLine("A person with this name is registered in your directory.");
+                            Console.WriteLine("Enter the first or last name you want to search for: ");
+                            string namesurname2 = Console.ReadLine();
+                            methods.Search(namesurname2, Contactlist);
+                        }
+                        else if (num1 == 2)
+                        {
+                            Console.WriteLine("Enter the phone number you want to call: ");
+                            string phone3 = Console.ReadLine();
+                            methods.Search(phone3, Contactlist);
                         }
                         else
                         {
-                            Console.WriteLine("There is no person with this name in your contacts.");
-                        } 
+                            Console.WriteLine("You can only enter 1 or 2.");
+                        }
                         break;
                     default:
                         Console.WriteLine("Please enter a valid transaction.");
