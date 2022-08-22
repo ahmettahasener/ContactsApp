@@ -14,16 +14,19 @@ namespace ContactsApp
             {
                 if (item.Name.Contains(value) || item.Surname.Contains(value) || item.Phone.Contains(value))
                 {
+                    Console.WriteLine("-");
                     Console.WriteLine(" Your Search Results: ");
                     Console.WriteLine("A person with this name is registered in your directory. \n**********************************************");
                     Console.WriteLine("Name: {0}", item.Name);
                     Console.WriteLine("Surname: {0}", item.Surname);
                     Console.WriteLine("Phone Number: {0}", item.Phone);
                     Console.WriteLine("-");
+                    break;
                 }
                 else
                 {
                     Console.WriteLine("There is no person with this name in your contacts. Please make a selection.");
+                    break;
                 }
             }
         }
@@ -58,5 +61,5 @@ namespace ContactsApp
             Console.WriteLine("Updated name: " + item.Surname);
             Console.WriteLine("Updated name: " + item.Phone);
         }
-    }
+    }     
 }
