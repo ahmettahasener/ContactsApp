@@ -26,15 +26,17 @@ namespace ContactsApp
 
             while (true)
             {
+                
                 Console.WriteLine("");
                 Console.WriteLine("1 - Register Phone Number");
                 Console.WriteLine("2 - Delete Phone Number");
                 Console.WriteLine("3 - Update Phone Number");
                 Console.WriteLine("4 - Directory Listing");
                 Console.WriteLine("5 - Search in the Directory");
+                Console.WriteLine("6 - Exit the Application");
                 Console.Write("Enter the action you want to do: ");
 
-                Regex pattern = new Regex("^[a-zA-Z]+$"); //
+                Regex pattern = new Regex("^[a-zA-Z]+$");
                 string process = Console.ReadLine();
 
                 if (pattern.IsMatch(process))//On this line I blocked numeric input from keyboard.
@@ -78,6 +80,11 @@ namespace ContactsApp
                                     Console.WriteLine("You can just write 'y' or 'n'");
                                 }
                             }
+                            else
+                            {
+                                Console.WriteLine("The person named {0} was not found in the directory", namesurname);
+                                break;
+                            }
                         }
                         break;
 
@@ -93,7 +100,8 @@ namespace ContactsApp
                             }
                             else
                             {
-                                Console.WriteLine("There is no person with this name in your contacts.");
+                                Console.WriteLine("The person named {0} was not found in the directory", namesurname1);
+                                break;
                             }
                         }
                         break;
@@ -103,24 +111,40 @@ namespace ContactsApp
                     case "5": //Search to a specific person.
                         Console.WriteLine("Select the type you want to search.\n**********************************************");
                         Console.WriteLine("To search by first or last name: (1)\nTo search by phone number: (2)");
-                        int num1 = int.Parse(Console.ReadLine());
 
-                        if (num1 == 1)
+                        Regex pattern1 = new Regex("^[a-zA-Z]+$");
+                        string num2 = Console.ReadLine();
+
+                        if (pattern1.IsMatch(num2))//On this line I blocked numeric input from keyboard.
                         {
-                            Console.WriteLine("Enter the first or last name you want to search for: ");
-                            string namesurname2 = Console.ReadLine();
-                            methods.Search(namesurname2, Contactlist);
-                        }
-                        else if (num1 == 2)
-                        {
-                            Console.WriteLine("Enter the phone number you want to call: ");
-                            string phone3 = Console.ReadLine();
-                            methods.Search(phone3, Contactlist);
+                            Console.WriteLine("Please enter a operation number and do not write non numeric characters.");
                         }
                         else
                         {
-                            Console.WriteLine("You can only enter 1 or 2.");
+                            int num1 = Convert.ToInt32(num2);
+
+                            if (num1 == 1)
+                            {
+                                Console.WriteLine("Enter the first or last name you want to search for: ");
+                                string namesurname2 = Console.ReadLine();
+                                methods.Search(namesurname2, Contactlist);
+                                break;
+                            }
+                            else if (num1 == 2)
+                            {
+                                Console.WriteLine("Enter the phone number you want to call: ");
+                                string phone3 = Console.ReadLine();
+                                methods.Search(phone3, Contactlist);
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("You can only enter 1 or 2.");
+                            }
                         }
+                        break;
+                    case "6": //It closes the program.
+                        Environment.Exit(0);
                         break;
                     default:
                         Console.WriteLine("Please enter a valid transaction.");
